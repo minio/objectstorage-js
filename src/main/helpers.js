@@ -18,7 +18,12 @@ import stream from 'stream'
 import mime from 'mime-types'
 var Crypto = require('crypto-browserify')
 const { XMLParser } = require("fast-xml-parser")
-const  fxp = new XMLParser()
+const  fxp = new XMLParser({
+  numberParseOptions: {
+    leadingZeros: false,
+    hex: false,
+  }
+})
 
 const ipaddr = require('ipaddr.js')
 import { isBrowser } from "browser-or-node"
@@ -379,7 +384,7 @@ export function getSourceVersionId(headers={}){
 export function sanitizeETag(etag='') {
   var replaceChars = {'"':'','&quot;':'','&#34;':'','&QUOT;':'','&#x00022':''}
   return etag.replace(/^("|&quot;|&#34;)|("|&quot;|&#34;)$/g, m => replaceChars[m])
-    
+
 }
 
 export const RETENTION_MODES ={

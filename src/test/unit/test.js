@@ -20,16 +20,20 @@ import { assert } from 'chai'
 import Nock from 'nock'
 import Stream from 'stream'
 import * as Minio from '../../../dist/main/minio'
-import { isValidEndpoint, 
+import { isValidEndpoint,
   isValidIP, makeDateLong,
   makeDateShort,partsRequired,
   CopySourceOptions,
   CopyDestinationOptions,
   isArray,
   calculateEvenSplits,
+  parseXml,
 } from '../../../dist/main/helpers'
 
 var Package = require('../../../package.json')
+
+const { XMLParser } = require("fast-xml-parser")
+const  fxp = new XMLParser()
 
 describe('Helpers', () => {
   it('should validate for s3 endpoint', () => {
@@ -44,7 +48,7 @@ describe('Helpers', () => {
   it('should fail for invalid endpoint characters', () => {
     assert.equal(isValidEndpoint('111.#2.11'), false)
   })
- 
+
   it('should make date short', () => {
     let date = new Date('2012-12-03T17:25:36.331Z')
 
@@ -56,6 +60,13 @@ describe('Helpers', () => {
     assert.equal(makeDateLong(date), '20170811T172634Z')
   })
 
+  it('should object key equal 0xf2', () => {
+    let xml = '<Key xmlns="http://s3.amazonaws.com/doc/2006-03-01/">0xf2</Key>'
+    let xmlobj = parseXml(xml)
+    let originxmlobj = fxp.parse(xml)
+    assert.equal(xmlobj.Key, '0xf2')
+    assert.equal(originxmlobj.Key, '242')
+  })
 
   // Adopted from minio-go sdk
   const oneGB =1024 * 1024 * 1024
@@ -72,7 +83,7 @@ describe('Helpers', () => {
   const maxMultipartPutObjectSize = 1024 * 1024 * 1024 * 1024 * 5
 
   it('Parts Required Test cases ', () =>{
-   
+
     const expectedPartsRequiredTestCases = [
       {value:0, expected:0},
       {value:1, expected:1},
@@ -157,9 +168,9 @@ describe('Helpers', () => {
         assert.equal(endIndex, expectedSplitsTestCases.expectedEnd)
       }
     })
-      
+
   })
-    
+
 })
 
 describe('CopyConditions', () => {
@@ -707,7 +718,7 @@ describe('Client', function() {
           done()
         }
       })
-        
+
     })
 
     describe('#removeObject(bucket, object, callback)', () => {
@@ -754,7 +765,7 @@ describe('Client', function() {
           done()
         }
       })
-      
+
       it('should fail on empty (string) removeOpts', (done) => {
         try {
           client.removeObject('hello', 'testRemoveOpts','', function() {})
@@ -1594,7 +1605,7 @@ describe('Client', function() {
           done()
         }
       })
-        
+
     })
   })
   describe('Select Object Content APIs', ()=> {
@@ -1644,7 +1655,7 @@ describe('IP Address Validations', ()=>{
   it('should validate for valid ip', () => {
     assert.equal(isValidIP('1.1.1.1'), true)
   })
-    
+
   it('Check list of IPV4 Invalid addresses', () => {
     const invalidIpv4 = [' 127.0.0.1', '127.0.0.1 ', '127.0.0.1 127.0.0.1', '127.0.0.256', '127.0.0.1//1', '127.0.0.1/0x1', '127.0.0.1/-1', '127.0.0.1/ab', '127.0.0.1/', '127.0.0.256/32', '127.0.0.1/33']
     invalidIpv4.map(ip=>{
