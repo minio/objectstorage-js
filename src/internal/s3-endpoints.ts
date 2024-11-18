@@ -35,6 +35,7 @@ const awsS3Endpoint = {
   'cn-north-1': 's3.cn-north-1.amazonaws.com.cn',
   'ap-east-1': 's3.ap-east-1.amazonaws.com',
   'eu-north-1': 's3.eu-north-1.amazonaws.com',
+  'ap-southeast-3': 's3.ap-southeast-3.amazonaws.com',
   // Add new endpoints here.
 }
 
