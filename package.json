@@ -21,7 +21,7 @@
   "exports": {
     ".": {
       "require": "./dist/main/minio.js",
-      "types": "./types/esm/minio.d.ts",
+      "types": "./dist/main/minio.d.ts",
       "default": "./dist/esm/minio.mjs"
     },
     "./dist/main/internal/*": null,
