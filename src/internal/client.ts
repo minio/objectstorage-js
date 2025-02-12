@@ -2253,7 +2253,7 @@ export class TypedClient {
     await this.removeTagging({ bucketName })
   }
 
-  async setObjectTagging(bucketName: string, objectName: string, tags: Tags, putOpts: TaggingOpts) {
+  async setObjectTagging(bucketName: string, objectName: string, tags: Tags, putOpts?: TaggingOpts) {
     if (!isValidBucketName(bucketName)) {
       throw new errors.InvalidBucketNameError('Invalid bucket name: ' + bucketName)
     }
